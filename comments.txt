@@ -1,0 +1,43 @@
+Syntax:
+
+java -jar test.jar <test> path=<x> size=<x> block=<x> count=<x> wpause=<x> rpause=<x> mode=<x> data=<x> cache=<x>
+
+test = select test: channels = Java NIO channels
+                    sgio     = Java NIO scattered-gathered operations
+                    iops     = Java NIO asynchronous file channels
+                    map      = Java NIO memory-mapped files
+
+path = file path, name, extension
+
+size = file size, can use integer K/M/G for Kilobytes/Megabytes/Gigabytes
+
+block = block size, can use integer K/M/G for Kilobytes/Megabytes/Gigabytes
+
+count = number of files
+
+wpause = pause from start to write, seconds
+
+rpause = pause from write end to read start, seconds
+
+mode = test mode, rw = read and write,
+                  wo = write only, leave file not deleted, it can use read after reboot for cache flush
+                  ro = read only, read file, can after reboot for cache flush, file deleted
+
+data = data mode, zero = zero-fill
+                  random = pseudo-random
+
+cache = cache and buffering option, none = reject cache (if rejection functional)
+                                    wt = writethrough cache (if writeback rejection functional)
+                                    wb = writeback cache
+
+
+Run examples:
+
+java -jar test.jar channels path=a.bin size=1G block=64M count=5 wpause=10 rpause=15 mode=rw data=zero cache=none
+java -jar test.jar sgio path=a.bin size=1G block=64M count=3 wpause=10 rpause=15 mode=rw data=zero cache=none
+java -jar test.jar iops path=a.bin size=1M count=10000 wpause=10 rpause=15 mode=rw data=zero
+java -jar test.jar map path=a.bin size=500M threads=1 wpause=10 rpause=15 mode=rw data=zero
+
+For some tests some parameters not functional. For example, number of threads in this version
+available for map test only. Use threads parameter for other tests cause error message.
+
